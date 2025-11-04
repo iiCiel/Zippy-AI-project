@@ -65,7 +65,7 @@ Window {
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            color: "#070c72"
+            color: "white"
             ListView {
                 id: chatListView
                 anchors.fill: parent
@@ -111,7 +111,7 @@ Window {
                 visible: chatModel.count === 0
                 anchors.centerIn: parent
                 text: "Ask Zippy anything about the\nCollege of Business!"
-                color: "#ffffff66"
+                color: "#070c72"
                 font.pixelSize: 18
                 horizontalAlignment: Text.AlignHCenter
                 lineHeight: 1.5
