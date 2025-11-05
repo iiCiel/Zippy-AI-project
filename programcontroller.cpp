@@ -2,11 +2,13 @@
 #include <iostream>
 
 ProgramController::ProgramController(QObject *parent)
-    : QObject(parent), ollama("http://localhost:11434", "gemma3:4b"), currentGenerateStatus(Error)
+    : QObject(parent),
+    settings("cob_zippy_ai.ini", QSettings::IniFormat),
+    ollama(settings.value("Ollama/URL", "http://localhost:11434").toString().toStdString(), settings.value("Ollama/Model", "http://gemma3:4b").toString().toStdString()),
+    currentGenerateStatus(Error)
 {
     connect(&ollama, &OllamaInterface::responseReceived, this, &ProgramController::onGenerateFinished);
     connect(&ollama, &OllamaInterface::responseFinished, this, &ProgramController::onStreamFinished);
-    // --- END OF NEW CODE ---
 }
 
 /*
@@ -15,6 +17,7 @@ ProgramController::ProgramController(QObject *parent)
 void ProgramController::setURL(QString url)
 {
     ollama.setURL(url.toStdString());
+    settings.setValue("Ollama/URL", url);
 }
 
 /*
@@ -31,6 +34,7 @@ QString ProgramController::getURL() const
 void ProgramController::setModel(QString model)
 {
     ollama.setModel(model.toStdString());
+    settings.setValue("Ollama/Model", model);
 }
 
 /*

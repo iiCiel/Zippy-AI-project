@@ -5,6 +5,7 @@
 #include <QString>
 #include <QtQmlIntegration>
 #include "ollamainterface.h"
+#include <QSettings>
 
 /*
     Serves as the interface to C++ from QML.
@@ -91,8 +92,8 @@ private slots:
     void onStreamFinished();
 
 private:
+    QSettings settings;
     OllamaInterface ollama;
-
     GenerateStatus currentGenerateStatus;
 
     void setGenerateStatus(GenerateStatus);
