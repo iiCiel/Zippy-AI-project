@@ -16,6 +16,10 @@ Window {
         anchors.fill: parent
         color: "#070c72"
     }
+    Component.onCompleted: {
+        controller.pingOllama();
+    }
+
     ColumnLayout {
         id: mainLayout
         spacing: 0
