@@ -7,7 +7,7 @@
 #include <QJsonObject>
 
 OllamaInterface::OllamaInterface(string url, string model)
-    : connected(false), url(std::move(url)), model(std::move(model))
+    : connected(false), url(url), model(model)
 {
     networkManager = new QNetworkAccessManager(this);
 }
