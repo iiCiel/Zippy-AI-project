@@ -6,7 +6,7 @@ import QtQuick.Layouts
 Window {
     id: window
     width: 640
-    height: 550 // Increased height slightly to make room for the new bar
+    height: 550
     visible: true
     title: qsTr("Zippy AI")
 
@@ -37,7 +37,6 @@ Window {
             }
         }
 
-        // Header with config button
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 60
@@ -74,14 +73,13 @@ Window {
         // Chat area
         Rectangle {
             Layout.fillWidth: true
-            Layout.fillHeight: true // This will automatically resize
+            Layout.fillHeight: true
             color: "white"
 
             ListView {
                 id: chatListView
                 anchors.fill: parent
                 anchors.margins: 15
-                // ... (rest of ListView is unchanged) ...
                 spacing: 12
                 clip: true
                 model: chatModel
@@ -118,7 +116,7 @@ Window {
                 }
             }
 
-            // Empty state message
+
             RowLayout {
                 visible: chatModel.count === 0
                 anchors.centerIn: parent
@@ -329,9 +327,9 @@ Window {
                 }
             }
         }
-        // --- NEW SECTION END ---
 
-    } // End of mainLayout
+
+    }
 
     InputPanel {
         id: inputPanel
