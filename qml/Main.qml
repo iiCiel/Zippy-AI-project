@@ -139,11 +139,11 @@ Window {
                     color: "#070c72"
                     font.pixelSize: 32
                     font.bold: true
-                    horizontalAlignment: Text.AlignRight
+                    horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     lineHeight: 1.2
                     Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+
                 }
             }
         }
@@ -153,7 +153,7 @@ Window {
             id: inputBar
             Layout.fillWidth: true
             Layout.preferredHeight: 85
-            color: "white"
+            color: "#1a1f6b"
             RowLayout {
 
                 anchors.fill: parent
