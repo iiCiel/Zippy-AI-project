@@ -4,23 +4,35 @@ project(cob_zippy_ai VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick)
+find_package(Qt6 REQUIRED COMPONENTS Quick Core)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
+set(CMAKE_AUTORCC ON)
+
+# Include directory for headers
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# Collect all source and header files
+file(GLOB_RECURSE SOURCES src/*.cpp)
+file(GLOB_RECURSE HEADERS include/*.h)
+
 qt_add_executable(appcob_zippy_ai
-    main.cpp
+    ${SOURCES}
+    ${HEADERS}
+    resources.qrc
 )
 
 qt_add_qml_module(appcob_zippy_ai
     URI cob_zippy_ai
     VERSION 1.0
+
     QML_FILES
-        Main.qml
-        SOURCES ollamainterface.h ollamainterface.cpp threadworker.h
-        SOURCES programcontroller.h programcontroller.cpp
-        QML_FILES OllamaConfig.qml
-        RESOURCES resources.qrc
+        qml/Main.qml
+        qml/OllamaConfig.qml
+
+    RESOURCES
+        resources.qrc
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
