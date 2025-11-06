@@ -111,6 +111,15 @@ Window {
                 }
             }
             // Empty state message
+            Image {
+                                id: zippyLogo
+                                source: "qrc:/images/ZippyAILogo.png"
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                width: 120
+                                height: 120
+                                fillMode: Image.PreserveAspectFit
+                            }
+
             Text {
                 visible: chatModel.count === 0
                 anchors.centerIn: parent
