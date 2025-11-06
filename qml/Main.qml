@@ -128,8 +128,8 @@ Window {
                 Image {
                     id: zippyLogo
                     source: "qrc:/images/ZippyAILogo.png"
-                    Layout.preferredWidth: 200
-                    Layout.preferredHeight: 200
+                    Layout.preferredWidth: 300
+                    Layout.preferredHeight: 300
                     fillMode: Image.PreserveAspectFit
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                 }
