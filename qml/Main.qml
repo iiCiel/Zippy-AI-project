@@ -2,20 +2,24 @@ import QtQuick
 import QtQuick.VirtualKeyboard
 import QtQuick.Controls
 import QtQuick.Layouts
+
 Window {
     id: window
     width: 640
     height: 480
     visible: true
     title: qsTr("Zippy AI")
+
     // Data model to store chat messages
     ListModel {
         id: chatModel
     }
+
     Rectangle {
         anchors.fill: parent
         color: "#070c72"
     }
+
     Component.onCompleted: {
         controller.pingOllama();
     }
@@ -32,6 +36,7 @@ Window {
                 easing.type: Easing.InOutQuad
             }
         }
+
         // Header with config button
         Rectangle {
             Layout.fillWidth: true
@@ -65,11 +70,13 @@ Window {
                 }
             }
         }
+
         // Chat area
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             color: "white"
+
             ListView {
                 id: chatListView
                 anchors.fill: parent
@@ -110,26 +117,40 @@ Window {
                     Qt.callLater(positionViewAtEnd)
                 }
             }
-            // Empty state message
-            Image {
-                                id: zippyLogo
-                                source: "qrc:/images/ZippyAILogo.png"
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                width: 120
-                                height: 120
-                                fillMode: Image.PreserveAspectFit
-                            }
 
-            Text {
+            //Row for Zippy + Text
+            RowLayout {
                 visible: chatModel.count === 0
                 anchors.centerIn: parent
-                text: "Ask Zippy anything about the\nCollege of Business!"
-                color: "#070c72"
-                font.pixelSize: 18
-                horizontalAlignment: Text.AlignHCenter
-                lineHeight: 1.5
+                spacing: 40
+                width: parent.width * 0.8
+                height: 250 //
+                Layout.alignment: Qt.AlignHCenter
+
+                Image {
+                    id: zippyLogo
+                    source: "qrc:/images/ZippyAILogo.png"
+                    Layout.preferredWidth: 200 //
+                    Layout.preferredHeight: 200
+                    fillMode: Image.PreserveAspectFit
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter // Aligns Zippy to the left and also the Center
+                }
+
+                Text {
+                    text: "ZIPPY AI\nCOLLEGE OF BUSINESS"
+                    color: "#070c72"
+                    font.pixelSize: 32
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    lineHeight: 1.2
+                    Layout.fillWidth: true
+
+                }
             }
+            // --- END REPLACED SECTION ---
         }
+
         // Input area
         Rectangle {
             id: inputBar
@@ -228,6 +249,7 @@ Window {
             }
         }
     }
+
     InputPanel {
         id: inputPanel
         z: 99
