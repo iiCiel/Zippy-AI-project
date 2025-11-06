@@ -6,7 +6,7 @@ import QtQuick.Layouts
 Window {
     id: window
     width: 640
-    height: 480
+    height: 550 // Increased height slightly to make room for the new bar
     visible: true
     title: qsTr("Zippy AI")
 
@@ -74,13 +74,14 @@ Window {
         // Chat area
         Rectangle {
             Layout.fillWidth: true
-            Layout.fillHeight: true
+            Layout.fillHeight: true // This will automatically resize
             color: "white"
 
             ListView {
                 id: chatListView
                 anchors.fill: parent
                 anchors.margins: 15
+                // ... (rest of ListView is unchanged) ...
                 spacing: 12
                 clip: true
                 model: chatModel
@@ -112,28 +113,27 @@ Window {
                         }
                     }
                 }
-                // Auto-scroll to bottom when new messages are added
                 onCountChanged: {
                     Qt.callLater(positionViewAtEnd)
                 }
             }
 
-            //Row for Zippy + Text
+            // Empty state message
             RowLayout {
                 visible: chatModel.count === 0
                 anchors.centerIn: parent
                 spacing: 40
                 width: parent.width * 0.8
-                height: 250 //
+                height: 250
                 Layout.alignment: Qt.AlignHCenter
 
                 Image {
                     id: zippyLogo
                     source: "qrc:/images/ZippyAILogo.png"
-                    Layout.preferredWidth: 200 //
+                    Layout.preferredWidth: 200
                     Layout.preferredHeight: 200
                     fillMode: Image.PreserveAspectFit
-                    Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter // Aligns Zippy to the left and also the Center
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                 }
 
                 Text {
@@ -141,14 +141,13 @@ Window {
                     color: "#070c72"
                     font.pixelSize: 32
                     font.bold: true
-                    horizontalAlignment: Text.AlignHCenter
+                    horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignVCenter
                     lineHeight: 1.2
                     Layout.fillWidth: true
-
+                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                 }
             }
-            // --- END REPLACED SECTION ---
         }
 
         // Input area
@@ -156,8 +155,9 @@ Window {
             id: inputBar
             Layout.fillWidth: true
             Layout.preferredHeight: 85
-            color: "#05094d"
+            color: "white"
             RowLayout {
+
                 anchors.fill: parent
                 anchors.margins: 15
                 spacing: 12
@@ -188,7 +188,6 @@ Window {
                         Connections {
                             target: controller
                             function onGenerateFinished(response) {
-                                // Update the last message (AI response) with the generated text
                                 if (chatModel.count > 0) {
                                     var lastIndex = chatModel.count - 1
                                     var lastMsg = chatModel.get(lastIndex)
@@ -214,20 +213,16 @@ Window {
                     onClicked: {
                         if (inputField.text.trim() !== "") {
                             mainLayout.isGenerating = true
-                            // Add user message
                             chatModel.append({
                                 message: inputField.text,
                                 isUser: true
                             })
-                            // Add empty AI message that will be filled in
                             chatModel.append({
                                 message: "",
                                 isUser: false
                             })
-                            // Send to controller
                             controller.generate(inputField.text)
                             inputField.text = ""
-                            // Hide keyboard
                             chatListView.forceActiveFocus()
                         }
                     }
@@ -248,7 +243,95 @@ Window {
                 }
             }
         }
-    }
+
+        // Navigation Bar
+        Rectangle {
+            id: navigationBar
+            Layout.fillWidth: true
+            Layout.preferredHeight: 70
+            color: "#05094d"
+
+            RowLayout { //ROW FOR THE BUTTONS. THESE ARE THE SPACING BETWEEN BUTTONS
+                anchors.fill: parent
+                anchors.margins: 15
+                spacing: 12
+
+                Button {
+                    text: "Home Page"
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 40
+                    font.pixelSize: 14
+                    background: Rectangle {
+                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF") // Blue
+                        radius: 8
+                        Behavior on color { ColorAnimation { duration: 150 } }
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        color: "white"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+
+                Button {
+                    text: "Building Maps"
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 40
+                    font.pixelSize: 14
+                    background: Rectangle {
+                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF") // Blue
+                        radius: 8
+                        Behavior on color { ColorAnimation { duration: 150 } }
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        color: "white"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+
+                Button {
+                    text: "Events"
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 40
+                    font.pixelSize: 14
+                    background: Rectangle {
+                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF") // Blue
+                        radius: 8
+                        Behavior on color { ColorAnimation { duration: 150 } }
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        color: "white"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+
+                Button {
+                    text: "Contact"
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 40
+                    font.pixelSize: 14
+                    background: Rectangle {
+                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF") // Blue
+                        radius: 8
+                        Behavior on color { ColorAnimation { duration: 150 } }
+                    }
+                    contentItem: Text {
+                        text: parent.text
+                        color: "white"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+            }
+        }
+        // --- NEW SECTION END ---
+
+    } // End of mainLayout
 
     InputPanel {
         id: inputPanel
