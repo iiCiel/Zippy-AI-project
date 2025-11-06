@@ -4,7 +4,10 @@
 ProgramController::ProgramController(QObject *parent)
     : QObject(parent),
     settings("cob_zippy_ai.ini", QSettings::IniFormat),
-    ollama(settings.value("Ollama/URL", "http://localhost:11434").toString().toStdString(), settings.value("Ollama/Model", "gemma3:4b").toString().toStdString()),
+    ollama(settings.value("Ollama/URL", "http://localhost:11434").toString().toStdString(),
+           settings.value("Ollama/Model", "gemma3:4b").toString().toStdString(),
+           settings.value("Ollama/ContextSize", 32000).toInt(),
+           settings.value("Ollama/Timeout", 120).toInt()),
     currentGenerateStatus(Error)
 {
     connect(&ollama, &OllamaInterface::responseReceived, this, &ProgramController::onGenerateFinished);
@@ -43,6 +46,40 @@ void ProgramController::setModel(QString model)
 QString ProgramController::getModel() const
 {
     return QString::fromStdString(ollama.getModel());
+}
+
+/*
+    Sets the context size in tokens.
+*/
+void ProgramController::setContextSize(int tokens)
+{
+    ollama.setContextSize(tokens);
+    settings.setValue("Ollama/ContextSize", tokens);
+}
+
+/*
+    Returns the context size in tokens.
+*/
+int ProgramController::getContextSize() const
+{
+    return ollama.getContextSize();
+}
+
+/*
+    Sets the timeout in seconds.
+*/
+void ProgramController::setTimeout(int seconds)
+{
+    ollama.setTimeout(seconds);
+    settings.setValue("Ollama/Timeout", seconds);
+}
+
+/*
+    Returns the timeout in seconds.
+*/
+int ProgramController::getTimeout() const
+{
+    return ollama.getTimeout();
 }
 
 /*

@@ -39,6 +39,26 @@ public:
     Q_INVOKABLE QString getModel() const;
 
     /*
+        Sets the context size in tokens.
+    */
+    Q_INVOKABLE void setContextSize(int tokens);
+
+    /*
+        Returns the context size in tokens.
+    */
+    Q_INVOKABLE int getContextSize() const;
+
+    /*
+        Sets the timeout in seconds.
+    */
+    Q_INVOKABLE void setTimeout(int seconds);
+
+    /*
+        Returns the timeout in seconds.
+    */
+    Q_INVOKABLE int getTimeout() const;
+
+    /*
         Pings the Ollama server and returns the status.
     */
     Q_INVOKABLE bool pingOllama();

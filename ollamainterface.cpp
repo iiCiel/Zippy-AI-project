@@ -6,8 +6,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-OllamaInterface::OllamaInterface(string url, string model)
-    : connected(false), url(url), model(model)
+OllamaInterface::OllamaInterface(string url, string model, int contextSize, int timeout)
+    : connected(false), url(url), model(model), contextSize(contextSize), timeout(timeout)
 {
     networkManager = new QNetworkAccessManager(this);
 }
@@ -145,4 +145,24 @@ void OllamaInterface::setModel(string newModel)
 string OllamaInterface::getModel() const
 {
     return model;
+}
+
+void OllamaInterface::setContextSize(int tokens)
+{
+    contextSize = tokens;
+}
+
+int OllamaInterface::getContextSize() const
+{
+    return contextSize;
+}
+
+void OllamaInterface::setTimeout(int seconds)
+{
+    timeout = seconds;
+}
+
+int OllamaInterface::getTimeout() const
+{
+    return timeout;
 }

@@ -17,7 +17,7 @@ class OllamaInterface : public QObject
 {
     Q_OBJECT
 public:
-    explicit OllamaInterface(string url, string model);
+    explicit OllamaInterface(string url, string model, int contextSize, int timeout);
     ~OllamaInterface();
 
     // Ping the Ollama server
@@ -31,6 +31,10 @@ public:
     string getURL() const;
     void setModel(string model);
     string getModel() const;
+    void setContextSize(int tokens);
+    int getContextSize() const;
+    void setTimeout(int seconds);
+    int getTimeout() const;
 
 signals:
     void pingFinished(bool success);
@@ -46,6 +50,8 @@ private:
     bool connected;
     string url;
     string model;
+    int contextSize; // in tokens
+    int timeout; // in seconds
 
     QNetworkAccessManager *networkManager;
     QThread requestThread;
