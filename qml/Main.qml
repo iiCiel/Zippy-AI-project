@@ -132,6 +132,9 @@ Window {
                     Layout.preferredHeight: 300
                     fillMode: Image.PreserveAspectFit
                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+                    smooth: true
+                    mipmap: true
+                    antialiasing: true
                 }
 
                 Text {
