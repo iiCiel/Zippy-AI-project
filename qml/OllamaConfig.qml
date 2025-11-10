@@ -60,7 +60,7 @@ ApplicationWindow {
             }
             TextField {
                 id: modelField
-                text: "gemma3:4b"
+                text: "qwen3:4b"
                 Layout.fillWidth: true
             }
         }

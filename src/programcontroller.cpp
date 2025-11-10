@@ -5,7 +5,7 @@ ProgramController::ProgramController(QObject *parent)
     : QObject(parent),
     settings("cob_zippy_ai.ini", QSettings::IniFormat),
     ollama(settings.value("Ollama/URL", "http://localhost:11434").toString().toStdString(),
-           settings.value("Ollama/Model", "gemma3:4b").toString().toStdString(),
+           settings.value("Ollama/Model", "qwen3:4b").toString().toStdString(),
            settings.value("Ollama/ContextSize", 32000).toInt(),
            settings.value("Ollama/Timeout", 120).toInt()),
     currentGenerateStatus(Error)
