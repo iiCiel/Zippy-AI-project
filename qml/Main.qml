@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.VirtualKeyboard
 import QtQuick.Controls
 import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
 
 Window {
     id: window
@@ -98,6 +99,38 @@ Window {
                         anchors.right: model.isUser ? parent.right : undefined
                         anchors.left: model.isUser ? undefined : parent.left
                         spacing: 8
+
+                        // Zippy avatar - only show for AI messages (left side)
+                        Item {
+                            visible: !model.isUser
+                            width: 40
+                            height: 40
+                            anchors.bottom: parent.bottom
+                            anchors.bottomMargin: 0
+
+                            Rectangle {
+                                id: avatarContainer
+                                anchors.fill: parent
+                                radius: 20
+                                color: "white"
+                                border.color: "#e0e0e0"
+                                border.width: 1
+                                clip: true
+
+                                Image {
+                                    id: zippyAvatar
+                                    source: "qrc:/images/ZippyAILogo.png"
+                                    anchors.centerIn: parent
+                                    width: parent.width - 4
+                                    height: parent.height - 4
+                                    fillMode: Image.PreserveAspectCrop
+                                    smooth: true
+                                    mipmap: true
+                                    antialiasing: true
+                                }
+                            }
+                        }
+
                         Rectangle {
                             id: messageBubble
                             width: Math.min(messageText.implicitWidth + 24, chatListView.width * 0.75)
@@ -163,7 +196,7 @@ Window {
                 anchors.margins: 15
                 spacing: 12
 
-                // Clear chat button (grayed out until messages exist)
+                // ✅ NEW DARK RED CLEAR CHAT BUTTON (grayed out until messages exist)
                 Button {
                     id: clearChatButton
                     text: "Clear Chat"
@@ -172,7 +205,7 @@ Window {
                     font.pixelSize: 14
                     font.bold: true
 
-                    enabled: chatModel.count > 0  // Disabled if chat is empty
+                    enabled: chatModel.count > 0  // ✅ Disabled if chat is empty
 
                     onClicked: {
                         chatModel.clear()
