@@ -30,6 +30,7 @@ Window {
         anchors.fill: parent
         anchors.bottomMargin: inputPanel.active ? inputPanel.height : 0
         property bool isGenerating: false
+
         Behavior on anchors.bottomMargin {
             NumberAnimation {
                 duration: 250
@@ -37,6 +38,7 @@ Window {
             }
         }
 
+        // ===== HEADER BAR =====
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 60
@@ -70,7 +72,7 @@ Window {
             }
         }
 
-        // Chat area
+        // ===== CHAT AREA =====
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -83,12 +85,15 @@ Window {
                 spacing: 12
                 clip: true
                 model: chatModel
+
                 ScrollBar.vertical: ScrollBar {
                     policy: ScrollBar.AsNeeded
                 }
+
                 delegate: Item {
                     width: chatListView.width
                     height: messageBubble.height + 8
+
                     Row {
                         anchors.right: model.isUser ? parent.right : undefined
                         anchors.left: model.isUser ? undefined : parent.left
@@ -111,12 +116,10 @@ Window {
                         }
                     }
                 }
-                onCountChanged: {
-                    Qt.callLater(positionViewAtEnd)
-                }
+                onCountChanged: Qt.callLater(positionViewAtEnd)
             }
 
-
+            // Hero Screen (Only Shows When Chat Is Empty)
             RowLayout {
                 visible: chatModel.count === 0
                 anchors.centerIn: parent
@@ -126,12 +129,10 @@ Window {
                 Layout.alignment: Qt.AlignHCenter
 
                 Image {
-                    id: zippyLogo
                     source: "qrc:/images/ZippyAILogo.png"
                     Layout.preferredWidth: 300
                     Layout.preferredHeight: 300
                     fillMode: Image.PreserveAspectFit
-                    Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                     smooth: true
                     mipmap: true
                     antialiasing: true
@@ -146,22 +147,52 @@ Window {
                     verticalAlignment: Text.AlignVCenter
                     lineHeight: 1.2
                     Layout.fillWidth: true
-
                 }
             }
         }
 
-        // Input area
+        // ===== INPUT BAR + CLEAR CHAT BUTTON =====
         Rectangle {
             id: inputBar
             Layout.fillWidth: true
             Layout.preferredHeight: 85
             color: "#1a1f6b"
-            RowLayout {
 
+            RowLayout {
                 anchors.fill: parent
                 anchors.margins: 15
                 spacing: 12
+
+                // ✅ NEW DARK RED CLEAR CHAT BUTTON (grayed out until messages exist)
+                Button {
+                    id: clearChatButton
+                    text: "Clear Chat"
+                    Layout.preferredWidth: 110
+                    Layout.preferredHeight: 55
+                    font.pixelSize: 14
+                    font.bold: true
+
+                    enabled: chatModel.count > 0  // ✅ Disabled if chat is empty
+
+                    onClicked: {
+                        chatModel.clear()
+                    }
+
+                    background: Rectangle {
+                        radius: 27.5
+                        color: clearChatButton.enabled ? "#8B0000" : "#5a5a5a" // Dark red when active, gray when disabled
+                        Behavior on color { ColorAnimation { duration: 150 } }
+                    }
+
+                    contentItem: Text {
+                        text: clearChatButton.text
+                        font: clearChatButton.font
+                        color: "white"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 55
@@ -169,6 +200,7 @@ Window {
                     color: "#1a1f6b"
                     border.color: mainLayout.isGenerating ? "#666" : "#4a4f9b"
                     border.width: 2
+
                     TextField {
                         id: inputField
                         anchors.fill: parent
@@ -180,12 +212,9 @@ Window {
                         font.pixelSize: 16
                         placeholderTextColor: "#ffffff66"
                         verticalAlignment: TextInput.AlignVCenter
-                        background: Rectangle {
-                            color: "transparent"
-                        }
-                        onAccepted: {
-                            sendButton.clicked()
-                        }
+                        background: Rectangle { color: "transparent" }
+                        onAccepted: sendButton.clicked()
+
                         Connections {
                             target: controller
                             function onGenerateFinished(response) {
@@ -197,12 +226,14 @@ Window {
                                     }
                                 }
                             }
+
                             function onStreamFinished() {
                                 mainLayout.isGenerating = false
                             }
                         }
                     }
                 }
+
                 Button {
                     id: sendButton
                     text: "↑"
@@ -211,29 +242,26 @@ Window {
                     Layout.preferredHeight: 55
                     font.pixelSize: 24
                     font.bold: true
+
                     onClicked: {
                         if (inputField.text.trim() !== "") {
                             mainLayout.isGenerating = true
-                            chatModel.append({
-                                message: inputField.text,
-                                isUser: true
-                            })
-                            chatModel.append({
-                                message: "",
-                                isUser: false
-                            })
+
+                            chatModel.append({ message: inputField.text, isUser: true })
+                            chatModel.append({ message: "", isUser: false })
+
                             controller.generate(inputField.text)
                             inputField.text = ""
                             chatListView.forceActiveFocus()
                         }
                     }
+
                     background: Rectangle {
                         radius: 27.5
                         color: sendButton.enabled ? "#007AFF" : "#3a3a3c"
-                        Behavior on color {
-                            ColorAnimation { duration: 150 }
-                        }
+                        Behavior on color { ColorAnimation { duration: 150 } }
                     }
+
                     contentItem: Text {
                         text: sendButton.text
                         font: sendButton.font
@@ -245,14 +273,14 @@ Window {
             }
         }
 
-        // Navigation Bar
+        // ===== FOOTER NAV BAR =====
         Rectangle {
             id: navigationBar
             Layout.fillWidth: true
             Layout.preferredHeight: 70
             color: "#05094d"
 
-            RowLayout { //ROW FOR THE BUTTONS. THESE ARE THE SPACING BETWEEN BUTTONS
+            RowLayout {
                 anchors.fill: parent
                 anchors.margins: 15
                 spacing: 12
@@ -263,7 +291,7 @@ Window {
                     Layout.preferredHeight: 40
                     font.pixelSize: 14
                     background: Rectangle {
-                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF") // Blue
+                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF")
                         radius: 8
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }
@@ -281,7 +309,7 @@ Window {
                     Layout.preferredHeight: 40
                     font.pixelSize: 14
                     background: Rectangle {
-                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF") // Blue
+                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF")
                         radius: 8
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }
@@ -299,7 +327,7 @@ Window {
                     Layout.preferredHeight: 40
                     font.pixelSize: 14
                     background: Rectangle {
-                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF") // Blue
+                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF")
                         radius: 8
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }
@@ -317,7 +345,7 @@ Window {
                     Layout.preferredHeight: 40
                     font.pixelSize: 14
                     background: Rectangle {
-                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF") // Blue
+                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF")
                         radius: 8
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }
@@ -330,16 +358,16 @@ Window {
                 }
             }
         }
-
-
     }
 
+    // ===== MOBILE KEYBOARD HANDLING =====
     InputPanel {
         id: inputPanel
         z: 99
         x: 0
         y: window.height
         width: window.width
+
         states: State {
             name: "visible"
             when: inputPanel.active
@@ -348,6 +376,7 @@ Window {
                 y: window.height - inputPanel.height
             }
         }
+
         transitions: Transition {
             from: ""
             to: "visible"
