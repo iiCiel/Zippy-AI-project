@@ -163,7 +163,7 @@ Window {
                 anchors.margins: 15
                 spacing: 12
 
-                // ✅ NEW DARK RED CLEAR CHAT BUTTON (grayed out until messages exist)
+                // Clear chat button (grayed out until messages exist)
                 Button {
                     id: clearChatButton
                     text: "Clear Chat"
@@ -172,7 +172,7 @@ Window {
                     font.pixelSize: 14
                     font.bold: true
 
-                    enabled: chatModel.count > 0  // ✅ Disabled if chat is empty
+                    enabled: chatModel.count > 0  // Disabled if chat is empty
 
                     onClicked: {
                         chatModel.clear()
