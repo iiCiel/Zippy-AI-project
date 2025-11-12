@@ -48,7 +48,7 @@ void OllamaInterface::sendPrompt(const QString &systemPrompt, const QString &use
         return;
     }
 
-    QUrl endpoint(QString::fromStdString(url + "/api/generate"));
+    QUrl endpoint(QString::fromStdString(url + "/api/chat"));
     QNetworkRequest request(endpoint);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
