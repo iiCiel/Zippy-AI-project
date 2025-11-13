@@ -43,7 +43,7 @@ Window {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 60
-            color: "#05094d"
+            color: "#070c72"
             RowLayout {
                 anchors.fill: parent
                 anchors.margins: 10
@@ -256,7 +256,7 @@ Window {
             id: inputBar
             Layout.fillWidth: true
             Layout.preferredHeight: 85
-            color: "#1a1f6b"
+            color: "#070c72"
 
             RowLayout {
                 anchors.fill: parent
@@ -378,7 +378,7 @@ Window {
             id: navigationBar
             Layout.fillWidth: true
             Layout.preferredHeight: 70
-            color: "#05094d"
+            color: "#070c72"
 
             RowLayout {
                 anchors.fill: parent
@@ -391,7 +391,7 @@ Window {
                     Layout.preferredHeight: 40
                     font.pixelSize: 14
                     background: Rectangle {
-                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF")
+                        color: parent.down ? "#2323ff" : (parent.hovered ? "#2323ff" : "#2323ff")
                         radius: 8
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }
@@ -409,7 +409,7 @@ Window {
                     Layout.preferredHeight: 40
                     font.pixelSize: 14
                     background: Rectangle {
-                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF")
+                        color: parent.down ? "#2323ff" : (parent.hovered ? "#2323ff" : "#2323ff")
                         radius: 8
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }
@@ -427,7 +427,7 @@ Window {
                     Layout.preferredHeight: 40
                     font.pixelSize: 14
                     background: Rectangle {
-                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF")
+                        color: parent.down ? "#2323ff" : (parent.hovered ? "#2323ff" : "#2323ff")
                         radius: 8
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }
@@ -445,7 +445,7 @@ Window {
                     Layout.preferredHeight: 40
                     font.pixelSize: 14
                     background: Rectangle {
-                        color: parent.down ? "#0056b3" : (parent.hovered ? "#0069d9" : "#007AFF")
+                        color: parent.down ? "#2323ff" : (parent.hovered ? "#2323ff" : "#2323ff")
                         radius: 8
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }
