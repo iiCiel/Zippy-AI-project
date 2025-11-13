@@ -77,7 +77,15 @@ Window {
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            color: "white"
+            //color: "white"
+            gradient: Gradient {
+                GradientStop {
+                    position: 0.0; color: "#fffaa0"
+                }
+                GradientStop {
+                    position: 1.0; color: "#2323ff"
+                }
+            }
 
             ListView {
                 id: chatListView
@@ -136,7 +144,61 @@ Window {
                             width: Math.min(messageText.implicitWidth + 24, chatListView.width * 0.75)
                             height: messageText.implicitHeight + 20
                             radius: 18
-                            color: model.isUser ? "#007AFF" : "#3a3a3c"
+                            color: model.isUser ? "#80007AFF" : "#803a3a3c"
+                            border.color: model.isUser ? "#99FFFFFF" : "#77FFFFFF"
+                            border.width: 1.5
+
+                            Rectangle {
+                                anchors.fill: parent
+                                anchors.margins: 1
+                                radius: parent.radius - 1
+                                color: "transparent"
+                                border.color: "#33FFFFFF"
+                                border.width: 1
+                            }
+
+                            // Top Glass shine
+                            Rectangle {
+                                width: parent.width - 4
+                                height: parent.height * 0.5
+                                anchors.top: parent.top
+                                anchors.margins: 2
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                radius: parent.radius - 2
+                                gradient: Gradient {
+                                    GradientStop { position: 0.0; color: "#50FFFFFF" }
+                                    GradientStop { position: 0.5; color: "#20FFFFFF" }
+                                    GradientStop { position: 1.0; color: "#00FFFFFF" }
+                                }
+                            }
+
+                            // Frosted texture Overlay
+                            Rectangle {
+                                anchors.fill: parent
+                                radius: parent.radius
+                                color: model.isUser ? "#80007AFF" : "#803a3a3c"
+                                opacity: 0.6
+
+                                // Noise pattern for frosted glass texture
+                                Canvas {
+                                    anchors.fill: parent
+                                    onPaint: {
+                                        var ctx = getContext("2d");
+                                        ctx.clearRect(0, 0, width, height);
+
+                                        // Create noise pattern
+                                        for (var i = 0; i < width; i += 2) {
+                                            for (var j = 0; j < height; j += 2) {
+                                                var opacity = Math.random() * 0.1;
+                                                ctx.fillStyle = "rgba(255, 255, 255, " + opacity + ")";
+                                                ctx.fillRect(i, j, 1, 1);
+                                            }
+                                        }
+                                    }
+                                    Component.onCompleted: requestPaint()
+                                }
+                            }
+
                             Text {
                                 id: messageText
                                 text: model.message
@@ -145,6 +207,11 @@ Window {
                                 anchors.fill: parent
                                 anchors.margins: 12
                                 font.pixelSize: 16
+                                font.weight: Font.Medium
+                                z: 10
+
+                                style: Text.Raised
+                                styleColor: "#40000000"
                             }
                         }
                     }
