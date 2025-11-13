@@ -119,7 +119,7 @@ Window {
 
                                 Image {
                                     id: zippyAvatar
-                                    source: "qrc:/images/ZippyAILogo.png"
+                                    source: "qrc:/images/ZippyAvatar.png"
                                     anchors.centerIn: parent
                                     width: parent.width - 4
                                     height: parent.height - 4
