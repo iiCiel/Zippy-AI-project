@@ -464,9 +464,9 @@ Window {
     InputPanel {
         id: inputPanel
         z: 99
-        x: 0
+        anchors.horizontalCenter: parent.horizontalCenter
         y: window.height
-        width: window.width
+        width: window.width * .90 // This is how to resize the keyboard
 
         states: State {
             name: "visible"
