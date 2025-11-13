@@ -13,15 +13,13 @@
 
 using std::string;
 
-// data structure that represents a single chat exchange between a user and the model or a tool and the model
-// includes the prompt and the response from the model
+// data structure that represents a single chat message
+// can include messages from system, user, assistant, and tool calls
 // intended to represent the message object described in https://docs.ollama.com/api/chat
-struct ChatExchange
+struct ChatMessage
 {
-    QString system; // system prompt
-    QString user; // user prompt
-    QString tool; // tool calls
-    QString assistant; // response from the model
+    QString role; // can be "user", "system", "tool", or "assistant"
+    QString message; // message data
 };
 
 class OllamaInterface : public QObject
@@ -63,8 +61,8 @@ private:
     string model;
     int contextSize; // in tokens
     int timeout; // in seconds
-    std::vector<ChatExchange> chatHistory;
-    ChatExchange currentExchange;
+    std::vector<ChatMessage> chatHistory;
+    ChatMessage currentExchange;
 
     QNetworkAccessManager *networkManager;
     QThread requestThread;
