@@ -5,6 +5,7 @@
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <qjsonarray.h>
 
 OllamaInterface::OllamaInterface(string url, string model, int contextSize, int timeout)
     : connected(false), url(url), model(model), contextSize(contextSize), timeout(timeout)
@@ -52,14 +53,30 @@ void OllamaInterface::sendPrompt(const QString &systemPrompt, const QString &use
     QNetworkRequest request(endpoint);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
+    // build the chat message JSON objects
+    QJsonArray messages;
+    if (!systemPrompt.isEmpty())
+    {
+        QJsonObject systemMessage;
+        systemMessage["role"] = "system";
+        systemMessage["content"] = systemPrompt;
+        messages.append(systemMessage);
+    }
+    QJsonObject userMessage;
+    userMessage["role"] = "user";
+    userMessage["content"] = userPrompt;
+    messages.append(userMessage);
+
+    // build the final JSON object to send in the request
     QJsonObject json;
     json["model"] = QString::fromStdString(model);
-    json["system"] = systemPrompt;
-    json["prompt"] = userPrompt;
-    json["stream"] = true;  // Can be set to true for streaming responses
+    json["messages"] = messages;
+    json["stream"] = true;
 
+    // send the POST request to the ollama server and wait for the reply
     QNetworkReply *reply = networkManager->post(request, QJsonDocument(json).toJson());
     connect(reply, &QNetworkReply::readyRead, this, [this, reply]() { onPromptReply(reply); });
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() { reply->deleteLater(); });
 }
 
 void OllamaInterface::onPingReply(QNetworkReply *reply)
@@ -85,35 +102,58 @@ void OllamaInterface::onPromptReply(QNetworkReply *reply)
     if (reply->error() == QNetworkReply::NoError)
     {
         QByteArray responseData = reply->readAll();
-        QJsonDocument jsonResponse = QJsonDocument::fromJson(responseData);
         QString text;
 
-        if (jsonResponse.isObject())
-        {
-            QJsonObject obj = jsonResponse.object();
-            if (obj.contains("response"))
-                text = obj["response"].toString();
-            else
-                text = QString::fromUtf8(responseData);
+        // The response can contain multiple JSON objects separated by newlines
+        QList<QByteArray> jsonLines = responseData.split('\n');
 
-            if (obj.contains("done"))
+        for (const QByteArray &line : jsonLines)
+        {
+            if (line.trimmed().isEmpty())
+                continue;
+
+            QJsonParseError parseError;
+            QJsonDocument jsonResponse = QJsonDocument::fromJson(line, &parseError);
+
+            if (parseError.error != QJsonParseError::NoError || !jsonResponse.isObject())
             {
-                bool done = obj["done"].toBool();
-                if (done)
+                // If not valid JSON, emit raw data for debugging
+                // NOTE: THIS IS TEMPORARY, this should be handled properly
+                text = QString::fromUtf8(line);
+                emit responseReceived(text);
+                continue;
+            }
+
+            QJsonObject obj = jsonResponse.object();
+
+            if (obj.contains("message"))
+            {
+                QJsonObject messageObj = obj["message"].toObject();
+                QString role = messageObj["role"].toString();
+                QString content = messageObj["content"].toString();
+
+                // Only use assistant message content
+                if (role == "assistant")
                 {
-                    reply->deleteLater();
+                    text = content;
                     emit responseReceived(text);
-                    emit responseFinished();
-                    return; // Finished receiving response
                 }
             }
-        }
-        else
-        {
-            text = QString::fromUtf8(responseData);
-        }
+            else
+            {
+                // If something unexpected, emit full JSON line
+                // NOTE: THIS IS TEMPORARY, this should be handled properly
+                text = QString::fromUtf8(line);
+                emit responseReceived(text);
+            }
 
-        emit responseReceived(text);
+            if (obj.contains("done") && obj["done"].toBool())
+            {
+                reply->deleteLater();
+                emit responseFinished();
+                return; // Stop processing once done is true
+            }
+        }
     }
     else
     {
