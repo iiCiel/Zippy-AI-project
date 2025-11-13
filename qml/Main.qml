@@ -2,11 +2,11 @@ import QtQuick
 import QtQuick.VirtualKeyboard
 import QtQuick.Controls
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
+import QtQuick.Effects
 
 Window {
     id: window
-    width: 640
+    width: 750
     height: 550
     visible: true
     title: qsTr("Zippy AI")
@@ -103,8 +103,8 @@ Window {
                         // Zippy avatar - only show for AI messages (left side)
                         Item {
                             visible: !model.isUser
-                            width: 40
-                            height: 40
+                            width: 50
+                            height: 50
                             anchors.bottom: parent.bottom
                             anchors.bottomMargin: 0
 
@@ -123,7 +123,7 @@ Window {
                                     anchors.centerIn: parent
                                     width: parent.width - 4
                                     height: parent.height - 4
-                                    fillMode: Image.PreserveAspectCrop
+                                    fillMode: Image.PreserveAspectFit
                                     smooth: true
                                     mipmap: true
                                     antialiasing: true
