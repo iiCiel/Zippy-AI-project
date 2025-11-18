@@ -334,7 +334,7 @@ Window {
                     }
                 }
 
-                Button {
+                Button { //Send button
                     id: sendButton
                     text: "↑"
                     enabled: !mainLayout.isGenerating && inputField.text.trim() !== ""
