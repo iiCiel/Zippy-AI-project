@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     tags:
-      - 'v*' # run on every version tag pushed 
+      - 'v*' # run on every version tag pushed
 
 jobs:
   build:
@@ -24,41 +24,31 @@ jobs:
         version: '6.9.*'
         host: 'windows'
         target: 'desktop'
-        arch: 'win64_msvc2022_64'
+        arch: 'win64_msvc2019_64'
 
-    # Set up MSVC development environment
+    # Set up MSVC
     - name: Set up MSVC Developer Command Prompt
       uses: ilammy/msvc-dev-cmd@v1
 
-    # Configure and build with CMake
+    # Build via CMake
     - name: Build application
       run: |
         cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -G "NMake Makefiles"
         cmake --build build --config Release
 
-    # Install NSIS for producing a Windows installer
-    - name: Install NSIS
-      run: choco install nsis -y
-
-    # Create NSIS installer
-    - name: Package installer
-      shell: cmd
+    # Run windeployqt on the built executable
+    - name: Run windeployqt
       run: |
-        echo !include "MUI2.nsh" > installer.nsi
-        echo OutFile "cob-zippy-ai-installer.exe" >> installer.nsi
-        echo InstallDir "$PROGRAMFILES\appcob-zippy-ai" >> installer.nsi
-        echo Page directory >> installer.nsi
-        echo Page instfiles >> installer.nsi
-        echo Section >> installer.nsi
-        echo   SetOutPath "$INSTDIR" >> installer.nsi
-        echo   File "build\Release\appcob_zippy_ai.exe" >> installer.nsi
-        echo SectionEnd >> installer.nsi
-        makensis installer.nsi
+        $exe = "build\Release\your_executable.exe"
+        & "${Env:Qt6_DIR}\bin\windeployqt.exe" --release $exe
 
-    # Upload executable + installer to GitHub Release
-    - name: Upload artifacts to GitHub Release
+    # Zip the entire build/ folder (with Qt DLLs)
+    - name: Package build directory
+      run: |
+        powershell Compress-Archive -Path build\* -DestinationPath build.zip -Force
+
+    # Upload ZIP to GitHub Release
+    - name: Upload ZIP to GitHub Release
       uses: softprops/action-gh-release@v2
       with:
-        files: |
-          build/Release/your_executable.exe
-          installer.exe
+        files: build.zip
