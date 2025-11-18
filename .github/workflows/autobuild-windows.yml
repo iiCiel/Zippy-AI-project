@@ -42,15 +42,16 @@ jobs:
 
     # Create NSIS installer
     - name: Package installer
+      shell: cmd
       run: |
         echo !include "MUI2.nsh" > installer.nsi
-        echo OutFile "installer.exe" >> installer.nsi
-        echo InstallDir "\$PROGRAMFILES\\appcob-zippy-ai" >> installer.nsi
+        echo OutFile "cob-zippy-ai-installer.exe" >> installer.nsi
+        echo InstallDir "$PROGRAMFILES\appcob-zippy-ai" >> installer.nsi
         echo Page directory >> installer.nsi
         echo Page instfiles >> installer.nsi
         echo Section >> installer.nsi
-        echo   SetOutPath "\$INSTDIR" >> installer.nsi
-        echo   File "build\\Release\\appcob_zippy_ai.exe" >> installer.nsi
+        echo   SetOutPath "$INSTDIR" >> installer.nsi
+        echo   File "build\Release\appcob_zippy_ai.exe" >> installer.nsi
         echo SectionEnd >> installer.nsi
         makensis installer.nsi
 
