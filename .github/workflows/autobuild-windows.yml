@@ -24,7 +24,7 @@ jobs:
         version: '6.9.*'
         host: 'windows'
         target: 'desktop'
-        arch: 'win64_msvc2019_64'
+        arch: 'win64_msvc2022_64'
 
     # Set up MSVC
     - name: Set up MSVC Developer Command Prompt
