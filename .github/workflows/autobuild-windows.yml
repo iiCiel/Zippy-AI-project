@@ -1,0 +1,63 @@
+name: Build and Release Executable for Windows
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - 'v*' # run on every version tag pushed 
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+    # Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Install Qt for Windows
+    - name: Set up Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: '6.9.*'
+        host: 'windows'
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
+
+    # Set up MSVC development environment
+    - name: Set up MSVC Developer Command Prompt
+      uses: ilammy/msvc-dev-cmd@v1
+
+    # Configure and build with CMake
+    - name: Build application
+      run: |
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -G "NMake Makefiles"
+        cmake --build build --config Release
+
+    # Install NSIS for producing a Windows installer
+    - name: Install NSIS
+      run: choco install nsis -y
+
+    # Create NSIS installer
+    - name: Package installer
+      run: |
+        echo !include "MUI2.nsh" > installer.nsi
+        echo OutFile "installer.exe" >> installer.nsi
+        echo InstallDir "\$PROGRAMFILES\\YourAppName" >> installer.nsi
+        echo Page directory >> installer.nsi
+        echo Page instfiles >> installer.nsi
+        echo Section >> installer.nsi
+        echo   SetOutPath "\$INSTDIR" >> installer.nsi
+        echo   File "build\\Release\\your_executable.exe" >> installer.nsi
+        echo SectionEnd >> installer.nsi
+        makensis installer.nsi
+
+    # Upload executable + installer to GitHub Release
+    - name: Upload artifacts to GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          build/Release/your_executable.exe
+          installer.exe
