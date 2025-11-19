@@ -36,6 +36,12 @@ jobs:
         cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -G "NMake Makefiles"
         cmake --build build --config Release
 
+    - name: List build folder
+      run: |
+        dir build
+        dir build\Release
+
+
     # Run windeployqt on the built executable
     - name: Run windeployqt
       run: |
