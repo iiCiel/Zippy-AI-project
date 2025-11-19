@@ -39,7 +39,7 @@ jobs:
     # Run windeployqt on the built executable
     - name: Run windeployqt
       run: |
-        $exe = "build\Release\your_executable.exe"
+        $exe = "build\Release\appcob_zippy_ai.exe"
         & "$Env:Qt_ROOT_DIR\bin\windeployqt.exe" --release $exe
 
     # Zip the entire build/ folder (with Qt DLLs)
