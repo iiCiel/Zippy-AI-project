@@ -96,6 +96,7 @@ void OllamaInterface::onPromptReply(QNetworkReply *reply)
     {
         QByteArray responseData = reply->readAll();
         QString text;
+        static QString totalMessage;
 
         // The response can contain multiple JSON objects separated by newlines
         QList<QByteArray> jsonLines = responseData.split('\n');
@@ -129,6 +130,7 @@ void OllamaInterface::onPromptReply(QNetworkReply *reply)
                 if (role == "assistant")
                 {
                     text = content;
+                    totalMessage += text;
                     emit responseReceived(text);
                 }
             }
@@ -143,7 +145,9 @@ void OllamaInterface::onPromptReply(QNetworkReply *reply)
             if (obj.contains("done") && obj["done"].toBool())
             {
                 reply->deleteLater();
+                addMessageToHistory("assistant", totalMessage);
                 emit responseFinished();
+                totalMessage.clear();
                 return; // Stop processing once done is true
             }
         }
