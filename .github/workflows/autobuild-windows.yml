@@ -29,6 +29,7 @@ jobs:
     # Build via CMake with MinGW
     - name: Build application
       run: |
+        $env:PATH = "$env:IQTA_TOOLS\mingw1120_64\bin;$env:PATH"
         cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles"
         cmake --build build --config Release
 
