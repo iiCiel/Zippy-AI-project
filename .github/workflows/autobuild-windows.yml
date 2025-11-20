@@ -17,23 +17,20 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Install Qt for Windows
+    # Install Qt for Windows with MinGW
     - name: Set up Qt
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.9.*'
         host: 'windows'
         target: 'desktop'
-        arch: 'win64_msvc2022_64'
+        arch: 'win64_mingw'
+        tools: 'tools_mingw90'
 
-    # Set up MSVC
-    - name: Set up MSVC Developer Command Prompt
-      uses: ilammy/msvc-dev-cmd@v1
-
-    # Build via CMake
+    # Build via CMake with MinGW
     - name: Build application
       run: |
-        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -G "NMake Makefiles"
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles"
         cmake --build build --config Release
 
     # Run windeployqt on the built executable
