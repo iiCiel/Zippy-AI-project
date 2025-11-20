@@ -54,23 +54,22 @@ void OllamaInterface::sendPrompt(const QString &systemPrompt, const QString &use
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
     // build the chat message JSON objects
-    QJsonArray messages;
     if (!systemPrompt.isEmpty())
     {
         QJsonObject systemMessage;
         systemMessage["role"] = "system";
         systemMessage["content"] = systemPrompt;
-        messages.append(systemMessage);
+        messageHistory.append(systemMessage);
     }
     QJsonObject userMessage;
     userMessage["role"] = "user";
     userMessage["content"] = userPrompt;
-    messages.append(userMessage);
+    messageHistory.append(userMessage);
 
     // build the final JSON object to send in the request
     QJsonObject json;
     json["model"] = QString::fromStdString(model);
-    json["messages"] = messages;
+    json["messages"] = messageHistory;
     json["stream"] = true;
 
     // send the POST request to the ollama server and wait for the reply

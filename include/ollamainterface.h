@@ -8,19 +8,11 @@
 #include <QUrl>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <string>
 #include "threadworker.h"
 
 using std::string;
-
-// data structure that represents a single chat message
-// can include messages from system, user, assistant, and tool calls
-// intended to represent the message object described in https://docs.ollama.com/api/chat
-struct ChatMessage
-{
-    QString role; // can be "user", "system", "tool", or "assistant"
-    QString message; // message data
-};
 
 class OllamaInterface : public QObject
 {
@@ -61,8 +53,7 @@ private:
     string model;
     int contextSize; // in tokens
     int timeout; // in seconds
-    std::vector<ChatMessage> chatHistory;
-    ChatMessage currentExchange;
+    QJsonArray messageHistory;
 
     QNetworkAccessManager *networkManager;
     QThread requestThread;
