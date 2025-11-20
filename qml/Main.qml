@@ -73,11 +73,12 @@ Window {
             }
         }
 
+        // ---
+
         // ===== CHAT AREA =====
         Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            //color: "white"
             gradient: Gradient {
                 GradientStop {
                     position: 0.0; color: "#fffaa0"
@@ -101,24 +102,32 @@ Window {
 
                 delegate: Item {
                     width: chatListView.width
-                    height: messageBubble.height + 8
+
+                    height: Math.max(messageBubble.height + 8, 50 + 8)
+
+                    property real avatarTopY: height - 8 - 50
+
 
                     Row {
                         anchors.right: model.isUser ? parent.right : undefined
                         anchors.left: model.isUser ? undefined : parent.left
+                        y: 0
                         spacing: 8
 
-                        // Zippy avatar - only show for AI messages (left side)
+
                         Item {
+                            id: aiAvatarItem
                             visible: !model.isUser
                             width: 50
                             height: 50
+
                             anchors.bottom: parent.bottom
                             anchors.bottomMargin: 0
 
                             Rectangle {
                                 id: avatarContainer
                                 anchors.fill: parent
+
                                 radius: 20
                                 color: "white"
                                 border.color: "#e0e0e0"
@@ -139,6 +148,7 @@ Window {
                             }
                         }
 
+                        // --- Message Bubble ---
                         Rectangle {
                             id: messageBubble
                             width: Math.min(messageText.implicitWidth + 24, chatListView.width * 0.75)
@@ -215,6 +225,47 @@ Window {
                             }
                         }
                     }
+                    Item {
+                        id: zippyThinkingIndicator
+                        visible: !model.isUser && mainLayout.isGenerating && index === chatModel.count - 1
+                                 && model.message === ""
+                        width: 30
+                        height: 25
+                        z: 100
+
+
+                        x: 15 + 50 - 30 - 5
+
+
+                        y: avatarTopY - 15
+
+                        // Thought bubble!
+                        Rectangle {
+                            anchors.centerIn: parent
+                            width: 25
+                            height: 25
+                            radius: 12.5
+                            color: "white"
+                            border.color: "#888"
+                            border.width: 1
+
+                            // ... circles
+                            RowLayout {
+                                anchors.centerIn: parent
+                                spacing: 2
+
+                                Repeater {
+                                    model: 3
+                                    delegate: Rectangle {
+                                        width: 4
+                                        height: 4
+                                        radius: 2
+                                        color: "#3a3a3c"
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 onCountChanged: Qt.callLater(positionViewAtEnd)
             }
@@ -251,6 +302,8 @@ Window {
             }
         }
 
+        // ---
+
         // ===== INPUT BAR + CLEAR CHAT BUTTON =====
         Rectangle {
             id: inputBar
@@ -263,7 +316,7 @@ Window {
                 anchors.margins: 15
                 spacing: 12
 
-                // ✅ NEW DARK RED CLEAR CHAT BUTTON (grayed out until messages exist)
+                // ✅ DARK RED CLEAR CHAT BUTTON
                 Button {
                     id: clearChatButton
                     text: "Clear Chat"
@@ -272,7 +325,7 @@ Window {
                     font.pixelSize: 14
                     font.bold: true
 
-                    enabled: chatModel.count > 0  // ✅ Disabled if chat is empty
+                    enabled: chatModel.count > 0
 
                     onClicked: {
                         chatModel.clear()
@@ -280,7 +333,7 @@ Window {
 
                     background: Rectangle {
                         radius: 27.5
-                        color: clearChatButton.enabled ? "#8B0000" : "#5a5a5a" // Dark red when active, gray when disabled
+                        color: clearChatButton.enabled ? "#8B0000" : "#5a5a5a"
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }
 
@@ -322,6 +375,7 @@ Window {
                                     var lastIndex = chatModel.count - 1
                                     var lastMsg = chatModel.get(lastIndex)
                                     if (!lastMsg.isUser) {
+                                        // Update the message content
                                         chatModel.setProperty(lastIndex, "message", lastMsg.message + response)
                                     }
                                 }
@@ -348,7 +402,7 @@ Window {
                             mainLayout.isGenerating = true
 
                             chatModel.append({ message: inputField.text, isUser: true })
-                            chatModel.append({ message: "", isUser: false })
+                            chatModel.append({ message: "", isUser: false }) // Initial empty message for the AI
 
                             controller.generate(inputField.text)
                             inputField.text = ""
@@ -372,6 +426,8 @@ Window {
                 }
             }
         }
+
+        // ---
 
         // ===== FOOTER NAV BAR =====
         Rectangle {
@@ -466,7 +522,7 @@ Window {
         z: 99
         anchors.horizontalCenter: parent.horizontalCenter
         y: window.height
-        width: window.width * .90 // This is how to resize the keyboard
+        width: window.width * .90
 
         states: State {
             name: "visible"
