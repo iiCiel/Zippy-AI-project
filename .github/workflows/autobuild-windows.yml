@@ -21,10 +21,11 @@ jobs:
     - name: Set up Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: '6.9.*'
+        version: '6.8.1'
         host: 'windows'
         target: 'desktop'
-        arch: 'win64_mingw1310'
+        arch: 'win64_mingw'
+        tools: 'tools_mingw1120 qt.tools.mingw1120'
 
     # Build via CMake with MinGW
     - name: Build application
