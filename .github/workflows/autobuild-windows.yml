@@ -24,8 +24,7 @@ jobs:
         version: '6.9.*'
         host: 'windows'
         target: 'desktop'
-        arch: 'win64_mingw'
-        tools: 'tools_mingw90'
+        arch: 'win64_mingw1310'
 
     # Build via CMake with MinGW
     - name: Build application
