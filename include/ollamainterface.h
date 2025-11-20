@@ -48,6 +48,8 @@ private slots:
     void onPromptReply(QNetworkReply *reply);
 
 private:
+    void addMessageToHistory(QString role, QString content);
+
     bool connected;
     string url;
     string model;

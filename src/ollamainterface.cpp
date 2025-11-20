@@ -56,15 +56,9 @@ void OllamaInterface::sendPrompt(const QString &systemPrompt, const QString &use
     // build the chat message JSON objects
     if (!systemPrompt.isEmpty())
     {
-        QJsonObject systemMessage;
-        systemMessage["role"] = "system";
-        systemMessage["content"] = systemPrompt;
-        messageHistory.append(systemMessage);
+        addMessageToHistory("system", systemPrompt);
     }
-    QJsonObject userMessage;
-    userMessage["role"] = "user";
-    userMessage["content"] = userPrompt;
-    messageHistory.append(userMessage);
+    addMessageToHistory("user", userPrompt);
 
     // build the final JSON object to send in the request
     QJsonObject json;
@@ -204,4 +198,12 @@ void OllamaInterface::setTimeout(int seconds)
 int OllamaInterface::getTimeout() const
 {
     return timeout;
+}
+
+void OllamaInterface::addMessageToHistory(QString role, QString content)
+{
+    QJsonObject message;
+    message["role"] = role;
+    message["content"] = content;
+    messageHistory.append(message);
 }
