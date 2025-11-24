@@ -2,7 +2,8 @@
 
 A desktop AI chatbot application designed for the University of Akron College of Business. Zippy provides students and faculty with an intelligent assistant to answer questions about the college, programs, and general inquiries.
 
-![Zippy AI Screenshot](<img width="938" height="712" alt="Screenshot 2025-11-23 130836" src="https://github.com/user-attachments/assets/25f37949-db53-4b26-a6b8-1a78c61ea6bf" />
+Zippy AI Screenshot <img width="938" height="712" alt="Screenshot 2025-11-23 130836" src="https://github.com/user-attachments/assets/3ad1debf-a664-46f6-9cde-0afb524b9aa7" />
+
 )
 
 ## Features
