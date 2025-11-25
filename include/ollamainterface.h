@@ -27,6 +27,9 @@ public:
     // Send a prompt to the model and receive the result asynchronously
     void sendPrompt(const QString &systemPrompt, const QString &userPrompt);
 
+    // request web search from ollama api
+    void requestWebSearch(const QString &query, const QString &apiKey);
+
     bool isConnected() const;
     void setURL(string url);
     string getURL() const;
@@ -46,6 +49,7 @@ signals:
 private slots:
     void onPingReply(QNetworkReply *reply);
     void onPromptReply(QNetworkReply *reply);
+    void receiveWebSearch(QNetworkReply *reply);
 
 private:
     void addMessageToHistory(QString role, QString content);

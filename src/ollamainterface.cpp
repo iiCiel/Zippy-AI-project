@@ -72,6 +72,32 @@ void OllamaInterface::sendPrompt(const QString &systemPrompt, const QString &use
     connect(reply, &QNetworkReply::finished, this, [this, reply]() { reply->deleteLater(); });
 }
 
+void OllamaInterface::requestWebSearch(const QString &query, const QString &apiKey)
+{
+    if (!connected)
+    {
+        emit requestError("Not connected to Ollama server.");
+        return;
+    }
+
+    QUrl endpoint("https://ollama.com/api/web_search");
+    QNetworkRequest request(endpoint);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    // build api key header
+    QString bearerKey = "Bearer " + apiKey;
+    request.setRawHeader("Authorization", bearerKey.toUtf8());
+
+    // build the final JSON object to send in the request
+    QJsonObject json;
+    json["query"] = query;
+
+    // send the POST request to the ollama server and wait for the reply
+    QNetworkReply *reply = networkManager->post(request, QJsonDocument(json).toJson());
+    connect(reply, &QNetworkReply::readyRead, this, [this, reply]() { receiveWebSearch(reply); });
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() { reply->deleteLater(); });
+}
+
 void OllamaInterface::onPingReply(QNetworkReply *reply)
 {
     connected = (reply->error() == QNetworkReply::NoError);
@@ -157,6 +183,22 @@ void OllamaInterface::onPromptReply(QNetworkReply *reply)
         emit requestError(reply->errorString());
         reply->deleteLater();
     }
+}
+
+void OllamaInterface::receiveWebSearch(QNetworkReply *reply)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        emit requestError(reply->errorString());
+        reply->deleteLater();
+    }
+
+    QByteArray responseData = reply->readAll();
+    // do we need to parse this and make it pretty for the model? were gonna say no for now
+    QString text = QString::fromUtf8(responseData);
+
+    // need some code here to actually send the prompt to the model
+    // probably make a separate function for tool responses to the model
 }
 
 bool OllamaInterface::isConnected() const
