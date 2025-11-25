@@ -54,6 +54,9 @@ private slots:
 private:
     void addMessageToHistory(QString role, QString content);
 
+    // send a prompt to the model containing the response from a tool function
+    void sendToolPrompt(const QString &toolResponse);
+
     bool connected;
     string url;
     string model;

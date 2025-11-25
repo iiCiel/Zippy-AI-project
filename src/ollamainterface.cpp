@@ -72,6 +72,33 @@ void OllamaInterface::sendPrompt(const QString &systemPrompt, const QString &use
     connect(reply, &QNetworkReply::finished, this, [this, reply]() { reply->deleteLater(); });
 }
 
+
+void OllamaInterface::sendToolPrompt(const QString &toolResponse)
+{
+    if (!connected)
+    {
+        emit requestError("Not connected to Ollama server.");
+        return;
+    }
+
+    QUrl endpoint(QString::fromStdString(url + "/api/chat"));
+    QNetworkRequest request(endpoint);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    // Add tool response as a user message
+    addMessageToHistory("tool", toolResponse);
+
+    QJsonObject json;
+    json["model"] = QString::fromStdString(model);
+    json["messages"] = messageHistory;
+    json["stream"] = false;
+
+    // send the POST request to the ollama server and wait for the reply
+    QNetworkReply *reply = networkManager->post(request, QJsonDocument(json).toJson());
+    connect(reply, &QNetworkReply::readyRead, this, [this, reply]() { onPromptReply(reply); });
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() { reply->deleteLater(); });
+}
+
 void OllamaInterface::requestWebSearch(const QString &query, const QString &apiKey)
 {
     if (!connected)
@@ -197,8 +224,7 @@ void OllamaInterface::receiveWebSearch(QNetworkReply *reply)
     // do we need to parse this and make it pretty for the model? were gonna say no for now
     QString text = QString::fromUtf8(responseData);
 
-    // need some code here to actually send the prompt to the model
-    // probably make a separate function for tool responses to the model
+    sendToolPrompt(text);
 }
 
 bool OllamaInterface::isConnected() const
