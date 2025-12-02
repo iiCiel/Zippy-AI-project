@@ -30,6 +30,9 @@ qt_add_qml_module(appcob_zippy_ai
     QML_FILES
         qml/Main.qml
         qml/OllamaConfig.qml
+        qml/Events.qml
+        qml/BuildingMaps.qml
+        qml/Contact.qml
 
     RESOURCES
         resources.qrc
