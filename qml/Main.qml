@@ -212,6 +212,7 @@ Window {
                             Text {
                                 id: messageText
                                 text: model.message
+                                textFormat: Text.MarkdownText
                                 color: "white"
                                 wrapMode: Text.Wrap
                                 anchors.fill: parent
@@ -222,6 +223,7 @@ Window {
 
                                 style: Text.Raised
                                 styleColor: "#40000000"
+                                onLinkActivated: (link) => Qt.openUrlExternally(link)
                             }
                         }
                     }
